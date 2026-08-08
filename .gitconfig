@@ -1,0 +1,12 @@
+[remote "origin"]
+    url = https://github.com/steveyu2026/daily-summary.git
+    fetch = +refs/*:refs/*
+
+[user]
+    email = steveyu2026@gmail.com
+    name = Steve Yu
+
+[push]
+    default = simple
+    mirror = false
+    receive = doHookVerify
