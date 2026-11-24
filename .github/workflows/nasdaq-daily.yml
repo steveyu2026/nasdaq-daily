@@ -1,0 +1,34 @@
+name: NASDAQ Daily Report
+
+on:
+  schedule:
+    - cron: '0 23 * * *'  # 每天 UTC 23:00 (北京时间次日 07:00)
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  generate-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Generate NASDAQ Close Report
+        run: |
+          python /opt/data/scripts/generate_nasdaq_close_report.py
+      
+      - name: Commit and Push
+        run: |
+          cd /opt/data/notes/nasdaq-daily
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add 2026-11-24-close.md  # 实际运行时需要根据日期动态生成
+          git commit -m "Add NASDAQ daily close report for $(date +'%Y-%m-%d')"
+          git push origin master
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        continue-on-error: true
